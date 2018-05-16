@@ -8,6 +8,7 @@
         PhoneGap Team
     </author>
     <preference name="orientation" value="landscape" />
+    <preference name="fullscreen" value="true" />
     <content src="index.html" />
     <access origin="*" />
     

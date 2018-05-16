@@ -9,5 +9,6 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <preference name="orientation" value="portrait" />
+    <preference name="orientation" value="landscape" />
+    <preference name="fullscreen" value="true" />
 </widget>
