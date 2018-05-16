@@ -1,5 +1,29 @@
 var game = new Phaser.Game(960, 540, Phaser.AUTO);
 
+var MenuState = {
+
+    preload : function() {
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+        this.load.image('cro', 'assets/img/cro.png');
+        this.load.audio('crack', 'assets/sounds/crack.wav');
+    },
+
+    create : function() {
+        this.croco = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'cro');
+        this.croco.anchor.setTo(0.5);
+        this.crocoSound = game.add.sound('crack');
+        game.time.events.add(Phaser.Timer.SECOND*1, function() {this.crocoSound.play();}, this);
+        game.time.events.add(Phaser.Timer.SECOND*3, function() {game.state.start('GameState')}, this);
+    },
+
+    update : function() {
+        game.time.events.add(Phaser.Timer.SECOND/10, function() {game.stage.backgroundColor = "#4488AA";}, this);
+    }
+
+}
+
+
 var GameState = {
 
     init: function () {
@@ -26,24 +50,34 @@ var GameState = {
 
         this.background = this.game.add.sprite(-300, 0, 'background');
         this.background.scale.setTo(1);
+        this.background.inputEnabled = true;
+
+        this.cro = this.game.add.sprite(100, 350, 'cro');
+        this.cro.scale.setTo(0.25);
+        this.cro.inputEnabled = true;
+        this.cro.input.pixelPerfectOver = true;
+        this.cro.crackSound = this.add.audio('crack');
+        this.cro.events.onInputDown.add(
+                function() {
+                    this.cro.crackSound.play();
+                }
+        ,this);
+
+       
 
         this.player = this.game.add.sprite(this.game.world.centerX, 350, 'girl');
         this.player.anchor.setTo(0.5);
         this.player.scale.setTo(1.25);
         this.player.inputEnabled = true;
-        this.player.input.enableDrag(true);
+        //this.player.input.enableDrag(true);
+        this.background.events.onInputDown.add(
+            function(){
+                if (game.input.y > 350) this.game.add.tween(this.player).to({x: this.game.input.x, y: this.game.input.y}).start();
+            }
+        ,this);
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
 
-        this.cro = this.game.add.sprite(100, 350, 'cro');
-        this.cro.scale.setTo(0.25);
-        this.cro.inputEnabled = true;
-        this.cro.crackSound = this.add.audio('crack');
-        this.cro.events.onInputDown.add(
-                function() {
-                    this.cro.crackSound.play();
-                    this.player.body.velocity.setTo(0, 0);
-                }
-        ,this);
+        
 
         this.hpIcon = this.game.add.sprite(20, 20, 'heart');
         this.hpIcon.scale.setTo(0.25);
@@ -63,22 +97,10 @@ var GameState = {
         this.textFD = game.add.text(335, 35, this.fd, style);
 
         //--------------------------------------------------------------------
-        this.hb.events.onInputDown.add(this.eats, this);
     },
 
     update: function() {
-       
-        //  400 is the speed it will move towards the mouse
-        game.physics.arcade.moveToPointer(this.player, 400);
-
-        //  if it's overlapping the mouse, don't move any more
-            if (Phaser.Rectangle.contains(this.player.body, game.input.x, game.input.y))
-            {
-                this.player.body.velocity.setTo(0, 0);
-            }
-        
-       
-
+           
         var deltaTime = game.time.elapsed / 1000;
         this.myTime = this.myTime + deltaTime;
 
@@ -125,4 +147,5 @@ var GameState = {
 };
 
 game.state.add('GameState', GameState);
-game.state.start('GameState');
+game.state.add('MenuState', MenuState);
+game.state.start('MenuState');
