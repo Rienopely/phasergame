@@ -8,12 +8,16 @@ var GameState = {
 
     preload: function () {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.load.image('background', 'bg.png');
-        this.load.image('girl', 'girl.png');
-        this.load.image('heart', 'heart.png');
-        this.load.image('happy', 'happy.png');
-        this.load.image('food', 'food.png');
-        this.load.image('hb', 'h.png');
+
+        this.load.image('background', 'assets/img/bg.png');
+        this.load.image('girl', 'assets/img/girl.png');
+        this.load.image('heart', 'assets/img/heart.png');
+        this.load.image('happy', 'assets/img/happy.png');
+        this.load.image('food', 'assets/img/food.png');
+        this.load.image('hb', 'assets/img/h.png');
+        this.load.image('cro', 'assets/img/cro.png');
+
+        this.load.audio('crack', 'assets/sounds/crack.wav');
     },
 
     create: function () {
@@ -23,12 +27,23 @@ var GameState = {
         this.background = this.game.add.sprite(-300, 0, 'background');
         this.background.scale.setTo(1);
 
-        this.player = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'girl');
+        this.player = this.game.add.sprite(this.game.world.centerX, 350, 'girl');
         this.player.anchor.setTo(0.5);
         this.player.scale.setTo(1.25);
         this.player.inputEnabled = true;
         this.player.input.enableDrag(true);
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
+
+        this.cro = this.game.add.sprite(100, 350, 'cro');
+        this.cro.scale.setTo(0.25);
+        this.cro.inputEnabled = true;
+        this.cro.crackSound = this.add.audio('crack');
+        this.cro.events.onInputDown.add(
+                function() {
+                    this.cro.crackSound.play();
+                    this.player.body.velocity.setTo(0, 0);
+                }
+        ,this);
 
         this.hpIcon = this.game.add.sprite(20, 20, 'heart');
         this.hpIcon.scale.setTo(0.25);
@@ -48,16 +63,11 @@ var GameState = {
         this.textFD = game.add.text(335, 35, this.fd, style);
 
         //--------------------------------------------------------------------
-        this.hb = this.game.add.sprite(20, 850,'hb');
-        this.hb.scale.setTo(0.18);
-        this.hb.inputEnabled = true;
         this.hb.events.onInputDown.add(this.eats, this);
-      
     },
 
     update: function() {
-        if (game.input.pointer1.isDown)
-        {
+       
         //  400 is the speed it will move towards the mouse
         game.physics.arcade.moveToPointer(this.player, 400);
 
@@ -66,11 +76,8 @@ var GameState = {
             {
                 this.player.body.velocity.setTo(0, 0);
             }
-        }
-        else
-        {
-            this.player.body.velocity.setTo(0, 0);
-        }
+        
+       
 
         var deltaTime = game.time.elapsed / 1000;
         this.myTime = this.myTime + deltaTime;
@@ -85,11 +92,11 @@ var GameState = {
         if(this.fd < 80) {this.player.scale.setTo(1, 1.25)}
         if(this.fd < 60) {this.player.scale.setTo(0.8, 1.25)}
         if(this.fd < 40) {this.player.scale.setTo(0.5, 1.25)}
-        if(this.fd > 100) {this.player.scale.setTo(1.35, 1.25)}
-        if(this.fd > 150) {this.player.scale.setTo(1.45 ,1.25)}
-        if(this.fd > 200) {this.player.scale.setTo(1.5, 1.25)}
-        if(this.fd > 250) {this.player.scale.setTo(1.6, 1.25)}
-        if(this.fd > 300) {this.player.scale.setTo(1.7, 1.25)}
+        if(this.fd > 100) {this.player.scale.setTo(1, 1.25)}
+        if(this.fd > 120) {this.player.scale.setTo(1.5 ,1.25)}
+        if(this.fd > 140) {this.player.scale.setTo(1.7, 1.25)}
+        if(this.fd > 160) {this.player.scale.setTo(1.9, 1.25)}
+        if(this.fd > 180) {this.player.scale.setTo(2, 1.25)}
     },
 
     decreaseHealth : function(points) {
