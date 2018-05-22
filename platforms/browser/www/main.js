@@ -468,7 +468,7 @@ var GameState3 = {
             }
 
             this.player.kill();
-            game.time.events.add(Phaser.Timer.SECOND*3, function() {game.state.start('EndState');}, this);
+            game.time.events.add(Phaser.Timer.SECOND*3, function() {game.state.start('End');}, this);
     },
 
     randomInteger: function(min, max) {
@@ -552,4 +552,4 @@ game.state.add('GameState', GameState);
 game.state.add('GameState2', GameState2);
 game.state.add('GameState3', GameState3);
 game.state.add('End', End);
-game.state.start('GameState3');
+game.state.start('GameState');

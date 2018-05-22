@@ -552,4 +552,4 @@ game.state.add('GameState', GameState);
 game.state.add('GameState2', GameState2);
 game.state.add('GameState3', GameState3);
 game.state.add('End', End);
-game.state.start('GameState3');
+game.state.start('GameState');
